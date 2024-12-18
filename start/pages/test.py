@@ -1,3 +1,5 @@
+import selenium
+
 from selenium.webdriver.common.by import By
 
 from selenium import webdriver
@@ -18,7 +20,7 @@ wait = WebDriverWait
 
 
 
-class Authorization:
+class AuthorizationSmoke:
 
     def __init__(self, browser, url):
         if browser.lower() == 'chrome':
@@ -277,19 +279,6 @@ class Authorization:
         random_message = random.choice(random_message)
         random_message.click()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         # wait(self.browser, 10).until(
         #     EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'button[aria-label="Добавить реакцию"]'))
         # )[-1].click()
@@ -300,3 +289,100 @@ class Authorization:
         #     EC.presence_of_all_elements_located((By. PARTIAL_LINK_TEXT, "Grinning Face with Sweat"))
         # )[1].click()
         # time.sleep(10)
+
+    def my_profile_settings(self):
+        wait(self.browser, 5).until(
+            EC.presence_of_element_located((By. CLASS_NAME, "left-sidebar__button-container"))
+        ).click()
+        settings = self.browser.find_element(By. CLASS_NAME, "user-title").click()
+        time.sleep(4)
+
+
+class Negative: 
+    def __init__(self, browser, url):
+        if browser.lower() == 'chrome':
+            self.browser = webdriver.Chrome()
+        else:
+            raise ValueError("Unsupported browser. Supported browsers are 'chrome'.")
+
+        self.url = url
+        self.browser.get(self.url)
+
+    
+
+    def Auth_failed(self, phone_number):
+        phone_field = WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.ID, "phone"))
+        )
+        phone_field.send_keys(phone_number)
+        receive_code_button = wait(self.browser, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "button.phone-input__receive-button"))
+        )
+        receive_code_button.click()
+        try:
+            number_fail = wait(self.browser, 5).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'phone-input__error'))
+            )
+        except:
+            pass
+        else:
+            assert number_fail.text == "Пользователь с таким номером не зарегистрирован"
+
+    def incorrect_phone(self):
+        time.sleep(0.5)
+        phone_field = WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.ID, "phone"))
+        )
+        phone_field.send_keys(Keys.BACKSPACE)
+        phone_field.send_keys(Keys.ENTER)
+        try:
+            number_fail = wait(self.browser, 5).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'phone-input__error'))
+            )
+        except:
+            pass
+        else:
+            assert number_fail.text == "Неверный формат номера телефона"
+
+    def create_an_existing_channel(self, phone_number, one_time_code, name_channel):
+        phone_field = WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.ID, "phone"))
+        )
+        phone_field.send_keys(phone_number)
+        receive_code_button = wait(self.browser, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "button.phone-input__receive-button"))
+        )
+        receive_code_button.click()
+        one_time_code_field = WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.ID, "one-time-code"))
+        )
+        one_time_code_field.send_keys(one_time_code)
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@id='root']//div[2]/div[2]//button"))
+        ).click()
+        create_channel_button = WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'button[aria-label="Создать канал"]'))
+        )
+        create_channel_button.click()
+        channel_name_field = self.browser.find_element(By.ID, 'name')
+        channel_name_field.send_keys(name_channel)
+        create_channel_submit_button = self.browser.find_element(By.XPATH, "//button[text()='Продолжить']")
+        create_channel_submit_button.click()
+        time.sleep(1)
+        try:
+            create_fail = wait(self.browser, 5).until(
+                EC.presence_of_all_elements_located((By.CLASS_NAME, 'custom-input__helper-text'))
+            )[0]
+            print(create_fail.text)
+        except:
+            pass
+        else:
+            assert create_fail.text == "Такой канал уже существует"
+        close = wait(self.browser, 5).until(
+            EC.presence_of_element_located((By. CLASS_NAME, "dialog__close-icon"))
+        ).click()
+        time.sleep(1)
+
+    
+
+
