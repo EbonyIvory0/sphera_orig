@@ -160,28 +160,28 @@ class AuthorizationSmoke:
         else:
             assert toast.text == "Изменения сохранены"
 
-    # def test_03_pinned_message(self, name_channel):
-    #     choose_channel = wait(self.browser, 10).until(
-    #         EC.presence_of_all_elements_located((By.CLASS_NAME, 'channel-data-container'))
-    #     )
-    #     choose_channel = random.choice(choose_channel)
-    #     choose_channel.click()
-    #     print_text = wait(self.browser, 5).until(
-    #     EC.presence_of_element_located((By. CSS_SELECTOR, "div.ql-editor.ql-blank[contenteditable='true']"))
-    #     )       
-    #     print_text.send_keys(name_channel)
-    #     wait(self.browser, 10).until(
-    #         EC.presence_of_element_located((By.XPATH, "//button[text()='Отправить']"))
-    #     ).click()
-    #     wait(self.browser, 10).until(
-    #         EC.presence_of_all_elements_located((By.CLASS_NAME, "message-card"))
-    #     )[-1].click()
-    #     message_menu = wait(self.browser, 10).until(
-    #         EC.presence_of_all_elements_located((By.CLASS_NAME, "message-action-buttons-container"))
-    #     )[-1]
-    #     wait(self.browser, 60).until(EC.visibility_of_element_located(
-    #         (By.CSS_SELECTOR, 'button[aria-label="Другие действия"]'))).click()
-    #     time.sleep(60)
+    def test_03_pinned_message(self, name_channel):
+        choose_channel = wait(self.browser, 10).until(
+            EC.presence_of_all_elements_located((By.CLASS_NAME, 'channel-data-container'))
+        )
+        choose_channel = random.choice(choose_channel)
+        choose_channel.click()
+        print_text = wait(self.browser, 5).until(
+        EC.presence_of_element_located((By. CSS_SELECTOR, "div.ql-editor.ql-blank[contenteditable='true']"))
+        )       
+        print_text.send_keys(name_channel)
+        wait(self.browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[text()='Отправить']"))
+        ).click()
+        wait(self.browser, 10).until(
+            EC.presence_of_all_elements_located((By.CLASS_NAME, "message-card"))
+        )[-1].click()
+        message_menu = wait(self.browser, 10).until(
+            EC.presence_of_all_elements_located((By.CLASS_NAME, "message-action-buttons-container"))
+        )[-1]
+        wait(self.browser, 60).until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, 'button[aria-label="Другие действия"]'))).click()
+        time.sleep(5)
 
     def test_04_mention_member(self):
         choose_channel = WebDriverWait(self.browser, 10).until(
